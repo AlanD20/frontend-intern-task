@@ -7,9 +7,8 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import { useContext } from 'react';
-import { GlobalContext } from '../common/store';
-import { Product } from '../common/types';
+import { useAppSelector } from '../common/hooks';
+import { Product } from '../features/products';
 import LoadingSpinner from './LoadingSpinner';
 import ProductRow from './ProductRow';
 import ProductTablePaginator from './ProductTablePaginator';
@@ -20,12 +19,12 @@ interface ProductTable {
 
 const ProductTable = ({ products }: ProductTable) => {
 
-  const { isLoading, paginator } = useContext(GlobalContext);
-
-  let perPage = paginator.get && paginator.get.perPage;
-  let left = perPage && (perPage - (products?.length as number));
-
-  const emptyRows = (left && (left > 0 ? perPage : 0)) ?? 0;
+  const pages = useAppSelector(state => state.products.pages);
+  const isLoading = useAppSelector(state => state.isLoading.value);
+  let emptyRows = 6 - (products?.length as number);
+  console.log(pages);
+  console.log(isLoading);
+  console.log(emptyRows);
 
   return (
     <TableContainer
@@ -44,7 +43,8 @@ const ProductTable = ({ products }: ProductTable) => {
           <TableRow
             sx={{
               '& td, & th': {
-                border: 'solid 2px rgba(0,0,0,.7)',
+                border: '2px solid white',
+                borderBottom: '2px solid rgba(0,0,0,.7)',
                 fontWeight: 900,
               },
             }}
@@ -56,13 +56,12 @@ const ProductTable = ({ products }: ProductTable) => {
         </TableHead>
         <TableBody sx={{ position: 'relative' }}>
           {
-            (isLoading.get || products?.length === 0) &&
+            (isLoading || products?.length === 0) &&
             <TableRow sx={{
               position: 'absolute',
               inset: 0,
-              height: 60 * 6
             }}>
-              <TableCell colSpan={6}>
+              <TableCell colSpan={6} style={{ border: 'none' }}>
                 <LoadingSpinner />
               </TableCell>
             </TableRow>
@@ -80,6 +79,7 @@ const ProductTable = ({ products }: ProductTable) => {
               />
             ))
           }
+
           {emptyRows > 0 &&
             <TableRow sx={{ height: 60 * emptyRows }}>
               <TableCell colSpan={6} />

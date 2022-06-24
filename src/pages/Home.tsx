@@ -1,18 +1,16 @@
 import ProductTable from '../components/ProductTable';
 import FilterTextField from '../components/FilterTextField';
-import { useContext } from 'react';
-import { GlobalContext } from '../common/store';
+import { useAppSelector } from '../common/hooks';
 
 
 const Home = () => {
 
-  const { products } = useContext(GlobalContext);
-  const filteredProducts = products.get && products.get.filter(p => p.isFiltered);
+  const products = useAppSelector(state => state.products.data);
 
   return (
     <>
       <FilterTextField />
-      <ProductTable products={filteredProducts} />
+      <ProductTable products={products.filter(p => p.isFiltered)} />
     </>
   )
 };
