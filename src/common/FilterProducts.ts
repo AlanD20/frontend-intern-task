@@ -1,4 +1,4 @@
-import { Product } from './types';
+import { Product } from "../features/products";
 
 export interface FilterProducts {
   products: Product[];

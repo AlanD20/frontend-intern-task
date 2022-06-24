@@ -1,13 +1,14 @@
-import { useContext } from 'react';
-import { GlobalContext } from '../common/store';
 import { useAppendParams } from '../hooks/useAppendParams';
 import { Pagination } from '@mui/material';
 import { useFetchPage } from '../hooks/useFetchPage';
+import { useAppDispatch, useAppSelector } from '../common/hooks';
+import { clearInputFilter } from '../features/inputFilter';
 
 const ProductTablePaginator = () => {
 
   const { appendParams } = useAppendParams();
-  const { paginator, filterInput } = useContext(GlobalContext);
+  const dispatch = useAppDispatch();
+  const pages = useAppSelector(state => state.products.pages);
   const fetchPage = useFetchPage();
 
   const handleChangePage = async (
@@ -20,7 +21,7 @@ const ProductTablePaginator = () => {
     appendParams('page', nextPage, ['filter_id']);
 
     // Clear filter field for next page
-    filterInput.set && filterInput.set(null);
+    dispatch(clearInputFilter());
 
     // Fetch New Page
     fetchPage(nextPage);
@@ -28,9 +29,9 @@ const ProductTablePaginator = () => {
 
   return (
     <>
-      {paginator.get && <Pagination
-        count={paginator.get?.totalPages}
-        page={paginator.get?.page}
+      {<Pagination
+        count={pages.totalPages}
+        page={pages.page}
         onChange={handleChangePage}
         variant="outlined"
         shape="rounded"

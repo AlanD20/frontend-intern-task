@@ -1,11 +1,11 @@
-import { Product } from '../common/types';
 import { TableRow, TableCell } from '@mui/material';
+import { Product } from '../features/products';
 
 const ProductRow = ({ id, name, year, color }: Product) => (
   <TableRow
     sx={{
       '& td, & th': {
-        border: 'solid 2px rgba(0,0,0,.3)',
+        border: '2px solid white',
         fontWeight: 500,
       },
       backgroundColor: color,

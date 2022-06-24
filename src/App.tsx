@@ -1,14 +1,15 @@
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { useFetchPage } from './hooks/useFetchPage';
-import { GlobalContext } from './common/store';
 import Home from './pages/Home';
+import { useAppDispatch } from './common/hooks';
+import { setInputFilter } from './features/inputFilter';
 
 const App = () => {
 
   const location = useLocation();
-  const { filterInput } = useContext(GlobalContext);
+  const dispatch = useAppDispatch();
   const pageParam = new URLSearchParams(location.search);
   const fetchPage = useFetchPage();
 
@@ -17,7 +18,7 @@ const App = () => {
     const pageNumber = Number(pageParam.get('page')) ?? 1;
     const filterById = Number(pageParam.get('filter_id'));
 
-    filterInput.set && filterInput.set(filterById > 0 ? filterById : null);
+    dispatch(setInputFilter({ value: filterById }));
 
     fetchPage(pageNumber, filterById);
 
