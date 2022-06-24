@@ -3,39 +3,34 @@ import { ChangeEvent, KeyboardEvent } from 'react';
 import { useAppendParams } from '../hooks/useAppendParams';
 import { useAppDispatch, useAppSelector } from '../common/hooks';
 import { setInputFilter, clearInputFilter } from '../features/inputFilter';
-import { filterByProducts } from '../features/products';
-
+import { useFetchPage } from '../hooks/useFetchPage';
 
 const FilterTextField = () => {
-
-  const { appendParams } = useAppendParams();
   const dispatch = useAppDispatch();
-  const products = useAppSelector(state => state.products.data)
-  const inputFilter = useAppSelector(state => state.inputFilter.value);
+  const fetchPage = useFetchPage();
+  const { appendParams } = useAppendParams();
 
+  const inputFilter = useAppSelector((state) => state.inputFilter.value);
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-
-
-    dispatch(setInputFilter({
-      value: Number(e.target.value)
-    }));
+    dispatch(
+      setInputFilter({
+        value: Number(e.target.value),
+      })
+    );
 
     // Using Custom hook to Append params to URL
-    appendParams('filter_id', e.target.value);
+    appendParams('filter_id', e.target.value, ['page']);
 
     if (e.target.value === '') {
-
       dispatch(clearInputFilter());
-      return dispatch(filterByProducts({ products }));
+      return fetchPage();
     }
 
-    return dispatch(filterByProducts({
-      products,
-      filterBy: Number(e.target.value),
-    }));
+    return fetchPage({
+      filterById: Number(e.target.value),
+    });
   };
-
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     const PATTERN = /^[0-9]*$/;

@@ -8,10 +8,9 @@ const LoadingSpinner = () => (
       justifyContent: 'center',
       alignItems: 'center',
       position: 'absolute',
-      inset: 0
+      inset: 0,
     }}
   >
-
     <LoopIcon
       color="primary"
       fontSize="large"

@@ -8,7 +8,7 @@ const store = configureStore({
     products: productsReducer,
     inputFilter: inputFilterReducer,
     isLoading: isLoadingReducer,
-  }
+  },
 });
 
 export default store;

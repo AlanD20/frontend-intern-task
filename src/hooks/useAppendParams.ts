@@ -1,6 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 
-
 export const useAppendParams = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -20,7 +19,7 @@ export const useAppendParams = () => {
     }
 
     // Remove key if no value is present
-    if (value === '') {
+    if (value === '' || value == 0) {
       params.delete(key);
     }
 

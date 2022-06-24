@@ -1,60 +1,73 @@
-import { filterProducts } from '../common/FilterProducts';
 import { useAppDispatch } from '../common/hooks';
 import { Product, setProducts } from '../features/products';
 import axios from 'axios';
 import { setIsLoading } from '../features/isLoading';
 
+export const ROWS_PER_PAGE = 5;
+
+interface FetchPage {
+  nextPage?: number;
+  filterById?: number;
+}
 
 export const useFetchPage = () => {
-
   const dispatch = useAppDispatch();
   const PRODUCTION_URL = 'https://reqres.in/api/products';
 
-  const fetchPage = async (nextPage: number, filterById?: number) => {
-
+  const fetchPage = async ({ nextPage, filterById }: FetchPage = {}) => {
     dispatch(setIsLoading({ value: true }));
 
-    const page = nextPage > 0 ? nextPage : 1;
+    const page = nextPage && nextPage > 0 ? nextPage : 1;
+    let URL = `${PRODUCTION_URL}?per_page=${ROWS_PER_PAGE}`;
 
-    const res = await axios.get(`${PRODUCTION_URL}?page=${page}`);
-    const obj = res.data;
+    if (nextPage && nextPage > 0) URL += `&page=${page}`;
+    if (filterById && filterById > 0) URL += `&id=${filterById}`;
 
-    let fetchedProducts: Product[] = obj.data.map((p: any) => ({
-      id: p.id,
-      name: p.name,
-      year: p.year,
-      color: p.color,
-      isFiltered: true,
-    }));
+    let fetchedProducts: Product[] = [];
+    let pages = null;
 
-    if (filterById && filterById > 0) {
-      fetchedProducts = filterProducts({
-        products: fetchedProducts,
-        value: filterById,
-      });
-    }
+    try {
+      const res = await axios.get(URL);
+      const obj = res.data;
 
-    dispatch(setProducts({
-      data: fetchedProducts,
-      pages: {
-        page: obj.page,
+      if (filterById && filterById > 0) {
+        fetchedProducts.push({
+          id: obj.data.id,
+          name: obj.data.name,
+          year: obj.data.year,
+          color: obj.data.color,
+        });
+      } else {
+        fetchedProducts = obj.data.map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          year: p.year,
+          color: p.color,
+        }));
+      }
+
+      pages = {
+        current: obj.page,
         perPage: obj.per_page,
         total: obj.total,
         totalPages: obj.total_pages,
-      }
-    }));
+      };
+    } catch (error) {
+      return;
+    } finally {
+      console.log('FETCHING FINALL');
+      console.log(pages);
+      console.log(fetchedProducts);
 
-    dispatch(setIsLoading({ value: false }));
-
-  }
+      dispatch(
+        setProducts({
+          pages,
+          data: fetchedProducts,
+        })
+      );
+      dispatch(setIsLoading({ value: false }));
+    }
+  };
 
   return fetchPage;
-}
-
-
-
-
-
-
-
-
+};
