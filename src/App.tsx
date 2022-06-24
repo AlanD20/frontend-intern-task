@@ -7,21 +7,22 @@ import { useAppDispatch } from './common/hooks';
 import { setInputFilter } from './features/inputFilter';
 
 const App = () => {
-
   const location = useLocation();
   const dispatch = useAppDispatch();
-  const pageParam = new URLSearchParams(location.search);
   const fetchPage = useFetchPage();
 
-  useEffect(() => {
+  const pageParam = new URLSearchParams(location.search);
 
+  useEffect(() => {
     const pageNumber = Number(pageParam.get('page')) ?? 1;
     const filterById = Number(pageParam.get('filter_id'));
 
     dispatch(setInputFilter({ value: filterById }));
 
-    fetchPage(pageNumber, filterById);
-
+    fetchPage({
+      filterById,
+      nextPage: pageNumber,
+    });
   }, []);
 
   return (

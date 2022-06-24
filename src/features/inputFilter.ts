@@ -2,10 +2,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface InputFilterState {
   value: number;
-};
+}
 
 const initialState: InputFilterState = {
-  value: 0
+  value: 0,
 };
 
 export const inputFilterSlice = createSlice({
@@ -13,14 +13,11 @@ export const inputFilterSlice = createSlice({
   initialState,
   reducers: {
     setInputFilter(state: any, action: PayloadAction<InputFilterState>) {
-
       state.value = action.payload.value;
     },
     clearInputFilter(state: any) {
-
       state.value = 0;
     },
-
   },
 });
 

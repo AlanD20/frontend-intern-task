@@ -9,7 +9,7 @@ const ProductRow = ({ id, name, year, color }: Product) => (
         fontWeight: 500,
       },
       backgroundColor: color,
-      height: 60
+      height: 60,
     }}
   >
     <TableCell align="center">{id}</TableCell>

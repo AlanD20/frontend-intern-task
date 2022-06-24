@@ -6,9 +6,11 @@ import {
   TableFooter,
   TableHead,
   TableRow,
+  Typography,
 } from '@mui/material';
 import { useAppSelector } from '../common/hooks';
 import { Product } from '../features/products';
+import { ROWS_PER_PAGE } from '../hooks/useFetchPage';
 import LoadingSpinner from './LoadingSpinner';
 import ProductRow from './ProductRow';
 import ProductTablePaginator from './ProductTablePaginator';
@@ -18,13 +20,9 @@ interface ProductTable {
 }
 
 const ProductTable = ({ products }: ProductTable) => {
-
-  const pages = useAppSelector(state => state.products.pages);
-  const isLoading = useAppSelector(state => state.isLoading.value);
-  let emptyRows = 6 - (products?.length as number);
-  console.log(pages);
-  console.log(isLoading);
-  console.log(emptyRows);
+  const isLoading = useAppSelector((state) => state.isLoading.value);
+  const pages = useAppSelector((state) => state.products.pages);
+  let emptyRows = ROWS_PER_PAGE - (products?.length as number);
 
   return (
     <TableContainer
@@ -55,20 +53,41 @@ const ProductTable = ({ products }: ProductTable) => {
           </TableRow>
         </TableHead>
         <TableBody sx={{ position: 'relative' }}>
-          {
-            (isLoading || products?.length === 0) &&
-            <TableRow sx={{
-              position: 'absolute',
-              inset: 0,
-            }}>
-              <TableCell colSpan={6} style={{ border: 'none' }}>
-                <LoadingSpinner />
+          {(isLoading || products?.length === 0) && (
+            <TableRow
+              sx={{
+                position: 'absolute',
+                inset: 0,
+              }}
+            >
+              <TableCell
+                colSpan={6}
+                style={{
+                  border: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {pages ? (
+                  <LoadingSpinner />
+                ) : (
+                  <Typography
+                    variant="h6"
+                    component="p"
+                    sx={{
+                      textAlign: 'center',
+                    }}
+                  >
+                    Product not found!
+                  </Typography>
+                )}
               </TableCell>
             </TableRow>
-          }
+          )}
 
-          {
-            (products && products.length > 0) &&
+          {products &&
+            products.length > 0 &&
             products.map((product) => (
               <ProductRow
                 id={product.id}
@@ -77,15 +96,13 @@ const ProductTable = ({ products }: ProductTable) => {
                 color={product.color}
                 key={product.id}
               />
-            ))
-          }
+            ))}
 
-          {emptyRows > 0 &&
+          {emptyRows > 0 && (
             <TableRow sx={{ height: 60 * emptyRows }}>
               <TableCell colSpan={6} />
             </TableRow>
-          }
-
+          )}
         </TableBody>
         <TableFooter>
           <TableRow>
@@ -95,8 +112,8 @@ const ProductTable = ({ products }: ProductTable) => {
           </TableRow>
         </TableFooter>
       </Table>
-    </TableContainer >
-  )
+    </TableContainer>
+  );
 };
 
 export default ProductTable;
