@@ -17,6 +17,7 @@
     "jsx": "react-jsx",
 
     /* Basic Options */
+    "baseUrl": ".",
     "checkJs": false,
     "incremental": true,
     "rootDir": "./src",
