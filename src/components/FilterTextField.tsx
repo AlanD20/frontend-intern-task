@@ -54,6 +54,7 @@ const FilterTextField = () => {
         onPaste={(e) => e.preventDefault()}
         label="Filter By ID"
         fullWidth
+        name='filter'
         inputProps={{
           inputMode: 'numeric',
           pattern: '[0-9]*',
